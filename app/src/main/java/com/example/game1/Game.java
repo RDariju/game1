@@ -15,6 +15,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
 
 
     private final Player player;
+    private final Joystic joystic;
     private GameLoop gameLoop;
     private Context context;
 
@@ -22,10 +23,18 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
     public boolean onTouchEvent(MotionEvent event) {
         switch(event.getAction()){
             case MotionEvent.ACTION_DOWN:
-                player.setPosition((double)event.getX(),(double)event.getY());
+                if(joystic.isPressed((double)event.getX(),(double)event.getY())){
+                    joystic.setIsPressed(true);
+                }
                 return true;
             case MotionEvent.ACTION_MOVE:
-                player.setPosition((double)event.getX(),(double)event.getY());
+                if(joystic.getIsPressed()){
+                    joystic.setActuator((double)event.getX(),(double)event.getY());
+                }
+                return true;
+            case MotionEvent.ACTION_UP:
+                joystic.setIsPressed(false);
+                joystic.resetActuator();
                 return true;
         }
         return super.onTouchEvent(event);
@@ -37,8 +46,10 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         SurfaceHolder surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
         this.context = context;
+
         gameLoop = new GameLoop(this,surfaceHolder);
 
+        joystic = new Joystic(275,700,70,40);
         player = new Player(getContext(), 2*500, 500,30);
         setFocusable(true);
     }
@@ -65,6 +76,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         drawUPS(canvas);
 
         player.draw(canvas);
+        joystic.draw(canvas);
     }
 
     public void drawUPS(Canvas canvas){
@@ -85,6 +97,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void update() {
-        player.update();
+        player.update(joystic);
+        joystic.update();
     }
 }
