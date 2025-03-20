@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN
         );
         setContentView(new Game(this));
-        EdgeToEdge.enable(this);
+
 
     }
 }
