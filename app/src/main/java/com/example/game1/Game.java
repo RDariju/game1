@@ -16,6 +16,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
 
     private final Player player;
     private final Joystic joystic;
+    private final Enemy enemy;
     private GameLoop gameLoop;
     private Context context;
 
@@ -50,7 +51,8 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
         gameLoop = new GameLoop(this,surfaceHolder);
 
         joystic = new Joystic(275,700,70,40);
-        player = new Player(getContext(), 2*500, 500,30);
+        player = new Player(getContext(), joystic,2*500, 500,30);
+        enemy = new Enemy(getContext(), player,500, 200,30);
         setFocusable(true);
     }
 
@@ -77,6 +79,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
 
         player.draw(canvas);
         joystic.draw(canvas);
+        enemy.draw(canvas);
     }
 
     public void drawUPS(Canvas canvas){
@@ -97,7 +100,8 @@ class Game extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void update() {
-        player.update(joystic);
+        player.update();
         joystic.update();
+        enemy.update();
     }
 }
